@@ -28,9 +28,7 @@ set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
 
-find_package(Boost )
-INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} COMPONENTS uuid coroutine program_options)
-
+find_package(Boost COMPONENTS program_options coroutine REQUIRED)
 
 target_include_directories(bayan 
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
