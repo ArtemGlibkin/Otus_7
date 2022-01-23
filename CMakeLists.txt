@@ -21,8 +21,15 @@ set_target_properties(bayan   PROPERTIES
 
 #find_package(GTest REQUIRED)
 find_package(Threads REQUIRED)
-find_package(Boost)
-INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+
+set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
+set(Boost_USE_DEBUG_LIBS        OFF)  # ignore debug libs and
+set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
+set(Boost_USE_MULTITHREADED      ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+
+find_package(Boost )
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} COMPONENTS uuid coroutine program_options)
 
 
 target_include_directories(bayan 
@@ -30,7 +37,8 @@ target_include_directories(bayan
 )
 
 target_include_directories(bayan  PRIVATE ${GTEST_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(bayan PRIVATE ${Boost_LIBRARIES} Threads::Threads)
+target_link_libraries(bayan PRIVATE Threads::Threads)
+target_link_libraries(bayan PRIVATE ${Boost_LIBRARIES})
 
 if(MSVC)
 	target_compile_options(bayan  PRIVATE /MT)

@@ -9,7 +9,6 @@
 #include "File.h"
 #include <filesystem>
 #include "FileMonitorParameters.h"
-#include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 
 class FileMonitor
