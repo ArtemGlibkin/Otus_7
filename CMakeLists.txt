@@ -28,7 +28,7 @@ set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
 
-find_package(Boost COMPONENTS program_options coroutine REQUIRED)
+find_package(Boost COMPONENTS program_options coroutine regex REQUIRED)
 
 target_include_directories(bayan 
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
