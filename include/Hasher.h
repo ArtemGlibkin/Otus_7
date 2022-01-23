@@ -9,7 +9,7 @@
 class Hasher
 {
 public:
-	virtual std::string getDigest(const std::string& in) = 0;
+	virtual std::string getDigest(const std::unique_ptr<char[]>& in, unsigned int size) = 0;
 };
 
 class MD5Hasher : public Hasher
@@ -24,10 +24,10 @@ class MD5Hasher : public Hasher
 		return result;
 	}
 public:
-	std::string getDigest(const std::string& in)
+	std::string getDigest(const std::unique_ptr<char[]>& in, unsigned int size)
 	{
 		boost::uuids::detail::md5 md5;
-		md5.process_bytes(in.c_str(), in.size());
+		md5.process_bytes(in.get(), size);
 		digest md5digest;
 		md5.get_digest(md5digest);
 		return hashToString(md5digest);
@@ -46,10 +46,10 @@ class SHA1Hasher : public Hasher
 		return result;
 	}
 public:
-	std::string getDigest(const std::string& in)
+	std::string getDigest(const std::unique_ptr<char[]> & in, unsigned int size)
 	{
 		boost::uuids::detail::sha1 sha1;
-		sha1.process_bytes(in.c_str(), in.size());
+		sha1.process_bytes(in.get(), size);
 		digest sha1digest;
 		sha1.get_digest(sha1digest);
 		return hashToString(sha1digest);

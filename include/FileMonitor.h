@@ -17,10 +17,9 @@ class FileMonitor
 	std::list<std::string> mDirectoryPathes;
 	std::set<std::filesystem::path> mExcludedPathes;
 	bool mNestedSearch;
-	std::set <File> mFileSet;
+	std::list<File> mFileSet;
 	HashAlgorithms mHashAlgo;
 	FilesMasks mFilesMasks;
-	std::map<File, std::list<File>> mResult;
 	unsigned int mMinimalFileSize = 1;
 public:
 	FileMonitor(const FileMonitorParameters& parameters) : mNestedSearch(parameters.nestedDirectories),
@@ -65,14 +64,10 @@ public:
 
 			for (auto const& entry : std::filesystem::directory_iterator{ path })
 			{
-				if (entry.is_regular_file() && (boost::filesystem::file_size(entry.path().string()) > mMinimalFileSize) && isFileMatchMasks(entry.path().filename().string()))
+				if (entry.is_regular_file() && (std::filesystem::file_size(entry.path().string()) > mMinimalFileSize) && isFileMatchMasks(entry.path().filename().string()))
 				{
-					File file(entry.path().string(), mHashAlgo);
-					auto find = mFileSet.find(file);
-					if (find != mFileSet.end())
-						mResult[*find].push_back(file);
-					else
-						mFileSet.insert(file);
+					//File file(entry.path().string(), mHashAlgo);
+					mFileSet.push_back(File(entry.path().string(), mHashAlgo));
 				}
 				else if (mNestedSearch && entry.is_directory())
 					mDirectoryPathes.push_back(std::filesystem::absolute(entry.path()).string());
@@ -82,13 +77,25 @@ public:
 	
 	void result()
 	{
-		for (auto it : mResult)
+		for (auto it = mFileSet.begin(); it != mFileSet.end(); it++)
 		{
-			std::cout << it.first.getPath() << std::endl;
-			for (auto it2 : it.second)
-				std::cout << it2.getPath() << std::endl;
-			
-			std::cout << std::endl;
+			bool find = false;
+			for (auto it2 = std::next(it, 1); it2 != mFileSet.end(); it2++)
+			{
+				if (it->compareFiles(*it2))
+				{
+					if (!find)
+					{
+						std::cout << it->getPath() << std::endl;
+						find = true;
+					}
+					std::cout << it2->getPath() << std::endl;
+					it2 = mFileSet.erase(it2);
+				}
+			}
+			if (find)
+				std::cout << std::endl;
 		}
 	}
+
 };

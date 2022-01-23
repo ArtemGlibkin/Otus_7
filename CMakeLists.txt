@@ -15,7 +15,7 @@ add_executable(bayan  src/main.cpp)
 #add_executable(bayan _test tests/BulkTest.cpp)
 
 set_target_properties(bayan   PROPERTIES
-    CXX_STANDARD 14
+    CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
 
@@ -30,7 +30,7 @@ target_include_directories(bayan
 )
 
 target_include_directories(bayan  PRIVATE ${GTEST_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(bayan LINK_PUBLIC ${Boost_LIBRARIES} Threads::Threads)
+target_link_libraries(bayan PRIVATE ${Boost_LIBRARIES} Threads::Threads)
 
 if(MSVC)
 	target_compile_options(bayan  PRIVATE /MT)
